@@ -1,4 +1,5 @@
 import React from "react";
+import UserSideBar from "./UserSideBar";
 
 interface IAppWrapper {
   children: React.ReactNode;
@@ -7,7 +8,7 @@ interface IAppWrapper {
 function AppWrapper({ children }: IAppWrapper) {
   return (
     <div className="h-full">
-        {/* //tolblar */}
+      <UserSideBar />
       <main className="lg:pl-10 h-full">{children}</main>
     </div>
   );
