@@ -1,9 +1,11 @@
-import React from 'react'
+import EmptyState from "@/components/EmptyState";
 
-function Chat() {
+const Chat = () => {
   return (
-    <div>Chat</div>
-  )
-}
+    <div className="hidden lg:block h-svh">
+      <EmptyState />
+    </div>
+  );
+};
 
-export default Chat
+export default Chat;

@@ -5,8 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSocket } from "@/hooks/useSocket";
 import ChatListItem from "./ChatListItem";
-// import type { ChatType } from "@/types/chat.type";
-// import type { MessageType } from "../../types/chat.type";
+import ChatListHeader from "./ChatListHeader";
+import type { ChatType } from "@/types/chat.type";
+import type { MessageType } from "../../types/chat.type";
 
 const ChatList = () => {
   const navigate = useNavigate();
@@ -38,38 +39,38 @@ const ChatList = () => {
     fetchChats();
   }, [fetchChats]);
 
-//   useEffect(() => {
-//     if (!socket) return;
+  useEffect(() => {
+    if (!socket) return;
 
-//     const handleNewChat = (newChat: ChatType) => {
-//       console.log("Recieved new chat", newChat);
-//       addNewChat(newChat);
-//     };
+    const handleNewChat = (newChat: ChatType) => {
+      console.log("Recieved new chat", newChat);
+      addNewChat(newChat);
+    };
 
-//     socket.on("chat:new", handleNewChat);
+    socket.on("chat:new", handleNewChat);
 
-//     return () => {
-//       socket.off("chat:new", handleNewChat);
-//     };
-//   }, [addNewChat, socket]);
+    return () => {
+      socket.off("chat:new", handleNewChat);
+    };
+  }, [addNewChat, socket]);
 
-//   useEffect(() => {
-//     if (!socket) return;
+  useEffect(() => {
+    if (!socket) return;
 
-//     const handleChatUpdate = (data: {
-//       chatId: string;
-//       lastMessage: MessageType;
-//     }) => {
-//       console.log("Recieved update on chat", data.lastMessage);
-//       updateChatLastMessage(data.chatId, data.lastMessage);
-//     };
+    const handleChatUpdate = (data: {
+      chatId: string;
+      lastMessage: MessageType;
+    }) => {
+      console.log("Recieved update on chat", data.lastMessage);
+      updateChatLastMessage(data.chatId, data.lastMessage);
+    };
 
-//     socket.on("chat:update", handleChatUpdate);
+    socket.on("chat:update", handleChatUpdate);
 
-//     return () => {
-//       socket.off("chat:update", handleChatUpdate);
-//     };
-//   }, [socket, updateChatLastMessage]);
+    return () => {
+      socket.off("chat:update", handleChatUpdate);
+    };
+  }, [socket, updateChatLastMessage]);
 
   const onRoute = (id: string) => {
     navigate(`/chat/${id}`);
@@ -91,7 +92,7 @@ const ChatList = () => {
     "
     >
       <div className="flex-col">
-        {/* <ChatListHeader onSearch={setSearchQuery} /> */}
+        <ChatListHeader onSearch={setSearchQuery} />
 
         <div
           className="

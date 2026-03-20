@@ -1,12 +1,8 @@
 import mongoose from "mongoose";
-// import cloudinary from "../configs/cloudinary.config";
+import cloudinary from "../configs/cloudinary.config";
 import ChatModel from "../models/chat.model";
 import MessageModel from "../models/message.model";
 import { BadRequestException, NotFoundException } from "../utils/app-error";
-// import {
-//   emitLastMessageToParticipants,
-//   emitNewMessageToChatRoom,
-// } from "../lib/socket";
 import UserModel from "../models/user.model";
 import { emitLastMessageToParticipants, emitNewMessageToChatRoom } from "../lib/socket";
 
@@ -41,8 +37,10 @@ export const sendMessageService = async (
 
   if (image) {
     //upload the image to cloudinary
-    // const uploadRes = await cloudinary.uploader.upload(image);
-    // imageUrl = uploadRes.secure_url;
+    const uploadRes = await cloudinary.uploader.upload(image, {
+      folder: "chit-chat-app",
+    });
+    imageUrl = uploadRes.secure_url;
   }
 
   const newMessage = await MessageModel.create({
