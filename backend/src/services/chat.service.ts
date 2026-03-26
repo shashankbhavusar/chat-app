@@ -33,7 +33,7 @@ export const createChatService = async(userId: string,
         const existingChat = await ChatModel.findOne({
             isGroup: false,
             participants: { $all: allParticipants, $size: 2 },
-        }).populate("participants", "name avatar");
+        }).populate("participants", "name avatar isAI");
 
         if(existingChat){
             return existingChat;
@@ -67,12 +67,12 @@ export const getUserChatsService = async (userId: string) => {
       $in: [userId],
     },
   })
-    .populate("participants", "name avatar")
+    .populate("participants", "name avatar isAI")
     .populate({
       path: "lastMessage",
       populate: {
         path: "sender",
-        select: "name avatar",
+        select: "name avatar isAI",
       },
     })
     .sort({ updatedAt: -1 });
@@ -85,7 +85,7 @@ export const getSingleChatService = async (chatId: string, userId: string) => {
     participants: {
       $in: [userId],
     },
-  }).populate("participants", "name avatar");
+  }).populate("participants", "name avatar isAI");
 
   if (!chat)
     throw new BadRequestException(
@@ -93,13 +93,13 @@ export const getSingleChatService = async (chatId: string, userId: string) => {
     );
 
   const messages = await MessageModel.find({ chatId })
-    .populate("sender", "name avatar")
+    .populate("sender", "name avatar isAI")
     .populate({
       path: "replyTo",
       select: "content image sender",
       populate: {
         path: "sender",
-        select: "name avatar",
+        select: "name avatar isAI",
       },
     })
     .sort({ createdAt: 1 });

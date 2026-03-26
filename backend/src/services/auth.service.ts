@@ -16,7 +16,7 @@ export const registerService = async(body:RegisterSchemaType)=>{
 }
 
 export const loginService = async(body:LoginSchemaType)=>{
-    console.log("Login service called with body:", body);
+
     const { email, password} = body;
 
     const user = await UserModel.findOne({ email });

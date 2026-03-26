@@ -28,11 +28,14 @@ export const initializeSocket = (httpServer: HTTPServer) => {
       if (!rawCookie) return next(new Error("Unauthorized"));
 
       // Parse cookies properly
-      const cookies = rawCookie.split(";").reduce((acc, cookie) => {
-        const [key, value] = cookie.trim().split("=");
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+      const cookies = rawCookie.split(";").reduce(
+        (acc, cookie) => {
+          const [key, value] = cookie.trim().split("=");
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
       const token = cookies["accessToken"];
       if (!token) return next(new Error("Unauthorized"));
@@ -72,19 +75,19 @@ export const initializeSocket = (httpServer: HTTPServer) => {
         try {
           await validateChatParticipant(chatId, userId);
           socket.join(`chat:${chatId}`);
-          console.log(`User ${userId} join room chat:${chatId}`);
+          // console.log(`User ${userId} join room chat:${chatId}`);
 
           callback?.();
         } catch (error) {
           callback?.("Error joining chat");
         }
-      }
+      },
     );
 
     socket.on("chat:leave", (chatId: string) => {
       if (chatId) {
         socket.leave(`chat:${chatId}`);
-        console.log(`User ${userId} left room chat:${chatId}`);
+        // console.log(`User ${userId} left room chat:${chatId}`);
       }
     });
 
@@ -111,7 +114,7 @@ function getIO() {
 
 export const emitNewChatToParticpants = (
   participantIds: string[] = [],
-  chat: any
+  chat: any,
 ) => {
   const io = getIO();
   for (const participantId of participantIds) {
@@ -122,14 +125,14 @@ export const emitNewChatToParticpants = (
 export const emitNewMessageToChatRoom = (
   senderId: string, //userId that sent the message
   chatId: string,
-  message: any
+  message: any,
 ) => {
   const io = getIO();
   const senderSocketId = onlineUsers.get(senderId?.toString());
 
-  console.log(senderId, "senderId");
-  console.log(senderSocketId, "sender socketid exist");
-  console.log("All online users:", Object.fromEntries(onlineUsers));
+  // console.log(senderId, "senderId");
+  // console.log(senderSocketId, "sender socketid exist");
+  // console.log("All online users:", Object.fromEntries(onlineUsers));
 
   if (senderSocketId) {
     io.to(`chat:${chatId}`).except(senderSocketId).emit("message:new", message);
@@ -141,12 +144,49 @@ export const emitNewMessageToChatRoom = (
 export const emitLastMessageToParticipants = (
   participantIds: string[],
   chatId: string,
-  lastMessage: any
+  lastMessage: any,
 ) => {
   const io = getIO();
   const payload = { chatId, lastMessage };
 
   for (const participantId of participantIds) {
     io.to(`user:${participantId}`).emit("chat:update", payload);
+  }
+};
+
+export const emitChatAI = ({
+  chatId,
+  chunk = null,
+  sender,
+  done = false,
+  message = null,
+}: {
+  chatId: string;
+  chunk?: string | null;
+  sender?: any;
+  done?: boolean;
+  message?: any;
+}) => {
+  const io = getIO();
+  if (chunk?.trim() && !done) {
+    io.to(`chat:${chatId}`).emit("chat:ai", {
+      chatId,
+      chunk,
+      done,
+      message: null,
+      sender,
+    });
+    return;
+  }
+
+  if (done) {
+    io.to(`chat:${chatId}`).emit("chat:ai", {
+      chatId,
+      chunk: null,
+      sender,
+      done,
+      message,
+    });
+    return;
   }
 };

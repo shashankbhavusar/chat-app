@@ -11,4 +11,7 @@ export const Env = {
     CLOUDINARY_CLOUD_NAME: getEnv("CLOUDINARY_CLOUD_NAME"),
     CLOUDINARY_API_KEY: getEnv("CLOUDINARY_API_KEY"),
     CLOUDINARY_API_SECRET: getEnv("CLOUDINARY_API_SECRET"),
+
+    //google gen ai
+    GEMNI_API_KEY: getEnv("GEMNI_API_KEY"),
 }

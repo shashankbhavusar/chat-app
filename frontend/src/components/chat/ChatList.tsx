@@ -43,7 +43,7 @@ const ChatList = () => {
     if (!socket) return;
 
     const handleNewChat = (newChat: ChatType) => {
-      console.log("Recieved new chat", newChat);
+
       addNewChat(newChat);
     };
 
@@ -61,7 +61,6 @@ const ChatList = () => {
       chatId: string;
       lastMessage: MessageType;
     }) => {
-      console.log("Recieved update on chat", data.lastMessage);
       updateChatLastMessage(data.chatId, data.lastMessage);
     };
 

@@ -13,7 +13,6 @@ function App() {
   const isAuth = isAuthRoute(pathname);
   const { onlineUsers, connectSocket } = useSocket();
 
-  console.log("Online users: ", onlineUsers);
 
   useEffect(() => {
     if (isAuth) return;

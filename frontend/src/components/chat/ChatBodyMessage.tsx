@@ -6,6 +6,8 @@ import AvatarWithBadge from "../AvatarWithBadge";
 import { formatChatTime } from "@/lib/helper";
 import { Button } from "../ui/button";
 import { ReplyIcon } from "lucide-react";
+import { RiCircleFill } from "@remixicon/react";
+import { Response } from "../ui/ai-response";
 
 interface Props {
   message: MessageType;
@@ -25,26 +27,26 @@ const ChatMessageBody = memo(({ message, onReply }: Props) => {
 
   const containerClass = cn(
     "group flex gap-2 py-3 px-4",
-    isCurrentUser && "flex-row-reverse text-left"
+    isCurrentUser && "flex-row-reverse text-left",
   );
 
   const contentWrapperClass = cn(
     "max-w-[70%]  flex flex-col relative",
-    isCurrentUser && "items-end"
+    isCurrentUser && "items-end",
   );
 
   const messageClass = cn(
     "min-w-[200px] px-3 py-2 text-sm break-words shadow-sm",
     isCurrentUser
       ? "bg-accent dark:bg-primary/40 rounded-tr-xl rounded-l-xl"
-      : "bg-[#F5F5F5] dark:bg-accent rounded-bl-xl rounded-r-xl"
+      : "bg-[#F5F5F5] dark:bg-accent rounded-bl-xl rounded-r-xl",
   );
 
   const replyBoxClass = cn(
     `mb-2 p-2 text-xs rounded-md border-l-4 shadow-md !text-left`,
     isCurrentUser
       ? "bg-primary/20 border-l-primary"
-      : "bg-gray-200 dark:bg-secondary border-l-[#CC4A31]"
+      : "bg-gray-200 dark:bg-secondary border-l-[#CC4A31]",
   );
   return (
     <div className={containerClass}>
@@ -61,7 +63,7 @@ const ChatMessageBody = memo(({ message, onReply }: Props) => {
         <div
           className={cn(
             "flex items-center gap-1",
-            isCurrentUser && "flex-row-reverse"
+            isCurrentUser && "flex-row-reverse",
           )}
         >
           <div className={messageClass}>
@@ -97,7 +99,13 @@ const ChatMessageBody = memo(({ message, onReply }: Props) => {
               />
             )}
 
-            {message.content && <p>{message.content}</p>}
+            {message.content && <Response>{message.content}</Response>}
+
+            {message?.streaming && (
+              <span>
+                <RiCircleFill className="w-4 h-4 animate-bounce rounded-full dark:text-white mt-1" />
+              </span>
+            )}
           </div>
 
           {/* {Reply Icon Button} */}
@@ -113,7 +121,7 @@ const ChatMessageBody = memo(({ message, onReply }: Props) => {
               size={16}
               className={cn(
                 "text-gray-500 dark:text-white !stroke-[1.9]",
-                isCurrentUser && "scale-x-[-1]"
+                isCurrentUser && "scale-x-[-1]",
               )}
             />
           </Button>

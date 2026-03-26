@@ -17,7 +17,7 @@ export const useSocket = create<SocketState>()((set, get) => ({
 
   connectSocket: () => {
     const { socket } = get();
-    console.log(socket, "socket");
+
     if (socket?.connected) return;
 
     const newSocket = io(BASE_URL, {
