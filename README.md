@@ -47,6 +47,199 @@ A modern full-stack chat platform built with React, TypeScript, Node.js, MongoDB
 
 ---
 
+
+## 🏛️ System Architecture
+
+```mermaid
+graph TD
+
+A[React Frontend] -->|REST API| B[Express Backend]
+
+A -->|Socket.IO| B
+
+B --> C[(MongoDB)]
+B --> D[Cloudinary]
+B --> E[Google AI]
+
+C --> F[Users]
+C --> G[Chats]
+C --> H[Messages]
+
+D --> I[Images]
+D --> J[Media Files]
+
+E --> K[AI Responses]
+
+
+```text
+┌─────────────────────────────────────────────┐
+│                 Frontend                    │
+│                                             │
+│  React 19 + TypeScript + Vite              │
+│  Zustand + React Router + Tailwind CSS     │
+│                                             │
+└───────────────────┬─────────────────────────┘
+                    │
+                    │ HTTP/HTTPS (REST APIs)
+                    │
+                    ▼
+┌─────────────────────────────────────────────┐
+│                 Backend                     │
+│                                             │
+│         Node.js + Express + TypeScript      │
+│                                             │
+│  ┌──────────────┐    ┌──────────────────┐   │
+│  │ Auth Module  │    │ Chat Module      │   │
+│  │ JWT          │    │ Messages         │   │
+│  │ Passport     │    │ Conversations    │   │
+│  └──────────────┘    └──────────────────┘   │
+│                                             │
+│  ┌──────────────┐    ┌──────────────────┐   │
+│  │ AI Module    │    │ Media Module     │   │
+│  │ Google AI    │    │ Cloudinary       │   │
+│  └──────────────┘    └──────────────────┘   │
+│                                             │
+└───────┬──────────────┬───────────────┬──────┘
+        │              │               │
+        │              │               │
+        ▼              ▼               ▼
+
+┌─────────────┐ ┌──────────────┐ ┌──────────────┐
+│  MongoDB    │ │  Cloudinary  │ │ Google AI    │
+│             │ │              │ │ API          │
+│ Users       │ │ Images       │ │ AI Chat      │
+│ Messages    │ │ Media Files  │ │ Responses    │
+│ Chats       │ │              │ │              │
+└─────────────┘ └──────────────┘ └──────────────┘
+
+
+Real-Time Communication
+
+┌─────────────┐       Socket.IO       ┌─────────────┐
+│   Client A  │ ◄──────────────────► │   Backend   │
+└─────────────┘                       └─────────────┘
+                                              ▲
+                                              │
+                                              │ Socket.IO
+                                              ▼
+                                     ┌─────────────┐
+                                     │   Client B  │
+                                     └─────────────┘
+```
+
+---
+
+## 🔄 Application Flow
+
+### User Authentication
+
+```text
+User Login/Register
+        │
+        ▼
+Frontend Form
+        │
+        ▼
+Express API
+        │
+        ▼
+Validate Request (Zod)
+        │
+        ▼
+MongoDB User Lookup
+        │
+        ▼
+Generate JWT Token
+        │
+        ▼
+Return Authenticated Session
+```
+
+### Real-Time Messaging
+
+```text
+User Sends Message
+        │
+        ▼
+Socket.IO Event
+        │
+        ▼
+Backend Server
+        │
+        ├── Store Message in MongoDB
+        │
+        └── Broadcast to Recipient
+                    │
+                    ▼
+              Recipient Receives
+              Message Instantly
+```
+
+### AI Chat Flow
+
+```text
+User Prompt
+      │
+      ▼
+Frontend
+      │
+      ▼
+Express API
+      │
+      ▼
+Google AI SDK
+      │
+      ▼
+AI Response Generated
+      │
+      ▼
+Store Conversation
+      │
+      ▼
+Return Response to User
+```
+
+### Media Upload Flow
+
+```text
+User Uploads Image
+        │
+        ▼
+Frontend
+        │
+        ▼
+Backend API
+        │
+        ▼
+Cloudinary Upload
+        │
+        ▼
+Image URL Generated
+        │
+        ▼
+Store URL in MongoDB
+        │
+        ▼
+Share in Chat
+```
+
+---
+
+## 🎯 Architecture Highlights
+
+- Scalable client-server architecture
+- Real-time bidirectional communication using Socket.IO
+- JWT-based stateless authentication
+- Cloud-based media storage with Cloudinary
+- AI-powered conversations using Google AI
+- Type-safe development with TypeScript
+- Centralized state management using Zustand
+- Schema validation using Zod
+- Responsive and modern UI with Tailwind CSS and ShadCN
+- MongoDB for flexible and scalable data storage
+
+---
+
 ## 🏗️ Tech Stack
 
 ### Frontend
@@ -310,195 +503,6 @@ git push origin feature/amazing-feature
 5. Open a Pull Request
 
 ---
-
-## 🏛️ System Architecture
-
-```text
-┌─────────────────────────────────────────────┐
-│                 Frontend                    │
-│                                             │
-│  React 19 + TypeScript + Vite              │
-│  Zustand + React Router + Tailwind CSS     │
-│                                             │
-└───────────────────┬─────────────────────────┘
-                    │
-                    │ HTTP/HTTPS (REST APIs)
-                    │
-                    ▼
-┌─────────────────────────────────────────────┐
-│                 Backend                     │
-│                                             │
-│         Node.js + Express + TypeScript      │
-│                                             │
-│  ┌──────────────┐    ┌──────────────────┐   │
-│  │ Auth Module  │    │ Chat Module      │   │
-│  │ JWT          │    │ Messages         │   │
-│  │ Passport     │    │ Conversations    │   │
-│  └──────────────┘    └──────────────────┘   │
-│                                             │
-│  ┌──────────────┐    ┌──────────────────┐   │
-│  │ AI Module    │    │ Media Module     │   │
-│  │ Google AI    │    │ Cloudinary       │   │
-│  └──────────────┘    └──────────────────┘   │
-│                                             │
-└───────┬──────────────┬───────────────┬──────┘
-        │              │               │
-        │              │               │
-        ▼              ▼               ▼
-
-┌─────────────┐ ┌──────────────┐ ┌──────────────┐
-│  MongoDB    │ │  Cloudinary  │ │ Google AI    │
-│             │ │              │ │ API          │
-│ Users       │ │ Images       │ │ AI Chat      │
-│ Messages    │ │ Media Files  │ │ Responses    │
-│ Chats       │ │              │ │              │
-└─────────────┘ └──────────────┘ └──────────────┘
-
-
-Real-Time Communication
-
-┌─────────────┐       Socket.IO       ┌─────────────┐
-│   Client A  │ ◄──────────────────► │   Backend   │
-└─────────────┘                       └─────────────┘
-                                              ▲
-                                              │
-                                              │ Socket.IO
-                                              ▼
-                                     ┌─────────────┐
-                                     │   Client B  │
-                                     └─────────────┘
-```
-
----
-
-## 🔄 Application Flow
-
-### User Authentication
-
-```text
-User Login/Register
-        │
-        ▼
-Frontend Form
-        │
-        ▼
-Express API
-        │
-        ▼
-Validate Request (Zod)
-        │
-        ▼
-MongoDB User Lookup
-        │
-        ▼
-Generate JWT Token
-        │
-        ▼
-Return Authenticated Session
-```
-
-### Real-Time Messaging
-
-```text
-User Sends Message
-        │
-        ▼
-Socket.IO Event
-        │
-        ▼
-Backend Server
-        │
-        ├── Store Message in MongoDB
-        │
-        └── Broadcast to Recipient
-                    │
-                    ▼
-              Recipient Receives
-              Message Instantly
-```
-
-### AI Chat Flow
-
-```text
-User Prompt
-      │
-      ▼
-Frontend
-      │
-      ▼
-Express API
-      │
-      ▼
-Google AI SDK
-      │
-      ▼
-AI Response Generated
-      │
-      ▼
-Store Conversation
-      │
-      ▼
-Return Response to User
-```
-
-### Media Upload Flow
-
-```text
-User Uploads Image
-        │
-        ▼
-Frontend
-        │
-        ▼
-Backend API
-        │
-        ▼
-Cloudinary Upload
-        │
-        ▼
-Image URL Generated
-        │
-        ▼
-Store URL in MongoDB
-        │
-        ▼
-Share in Chat
-```
-
----
-
-## 🎯 Architecture Highlights
-
-- Scalable client-server architecture
-- Real-time bidirectional communication using Socket.IO
-- JWT-based stateless authentication
-- Cloud-based media storage with Cloudinary
-- AI-powered conversations using Google AI
-- Type-safe development with TypeScript
-- Centralized state management using Zustand
-- Schema validation using Zod
-- Responsive and modern UI with Tailwind CSS and ShadCN
-- MongoDB for flexible and scalable data storage
-
-
-graph TD
-
-A[React Frontend] -->|REST API| B[Express Backend]
-
-A -->|Socket.IO| B
-
-B --> C[(MongoDB)]
-B --> D[Cloudinary]
-B --> E[Google AI]
-
-C --> F[Users]
-C --> G[Chats]
-C --> H[Messages]
-
-D --> I[Images]
-D --> J[Media Files]
-
-E --> K[AI Responses]
 
 ## 📄 License
 
